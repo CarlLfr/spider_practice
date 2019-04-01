@@ -4,8 +4,6 @@
 from  urllib import request
 import time
 
-
-
 # http://588ku.com/image/qingmingjie.html
 # http://588ku.com/sucai/0-default-0-0-qingmingjie-0-1/
 #
@@ -47,9 +45,9 @@ def tupianSpider(url, begin, end):
     print("下载完成！")
 
 if __name__ == '__main__':
-    url = "http://588ku.com/sucai/"
+    key = "http://588ku.com/sucai/"
     theme = input("请输入需要搜索的内容的拼音：")
-    url = url + "0-default-0-0-" + theme + "-0-"
+    url = key + "0-default-0-0-" + theme + "-0-"
     begin = int(input("请输入需要下载的起始页："))
     end = int(input("请输入需要下载的结束页："))
 
