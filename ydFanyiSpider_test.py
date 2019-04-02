@@ -4,6 +4,7 @@
 import urllib
 from urllib import request
 import re
+import json
 
 def ydFanyi(key):
     url = "http://fanyi.youdao.com/translate?smartresult=dict&smartresult=rule"
@@ -33,9 +34,13 @@ def ydFanyi(key):
     resp = request.urlopen(req).read().decode()
 
     # 正则表达式，提取"tgt": "和"}]]中间的任意内容
-    pat = r'"tgt": "(.*?)"}]]'
-    result = re.findall(pat, resp)
-    print(result[0])
+    # pat = r'"tgt": "(.*?)"}]]'
+    # result = re.findall(pat, resp)
+
+    # 将json格式转换为字典
+    dic = json.loads(resp)
+    res = dic["translateResult"][0][0]["tgt"]
+    print(res)
 
 if __name__ == '__main__':
     key = input("请输入需要翻译的词语或句子：")
