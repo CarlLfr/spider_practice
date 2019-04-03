@@ -19,14 +19,14 @@ header = {
      ) Chrome/73.0.3683.86 Safari/537.36"
 }
 
-# 爬去页面
+# 爬取页面
 def loadPage(fullurl, filename):
     print("正在下载：", filename)
     req = request.Request(fullurl, headers=header)
     res = request.urlopen(req).read()
     return res
 
-# 将爬去页面写入文件进行保存
+# 将爬取页面写入文件进行保存
 def writePage(html, filename):
     print("正在保存：", filename)
     with open(filename, "wb") as f:
