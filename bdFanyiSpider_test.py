@@ -5,6 +5,7 @@ import urllib
 from urllib import request
 import json
 
+# 百度翻译移动端爬虫
 # content = input("请输入需要翻译的词语或句子：")
 # url = "http://fanyi.baidu.com/basetrans"
 # formdata = {
@@ -26,6 +27,8 @@ import json
 # resp = request.urlopen(req).read().decode()
 # print(resp)
 
+
+# 百度翻译web端爬虫（不可用）
 header = {
     "User-Agent": "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWeb\
     Kit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.86 Safari/537.36"
