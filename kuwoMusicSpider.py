@@ -5,62 +5,74 @@ import requests
 import re
 
 header = {
-    "User-Agent": "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKi\
-    t/537.36 (KHTML, like Gecko) Chrome/73.0.3683.86 Safari/537.36"
+    "User-Agent": "Mozilla/5.0 (Windows NT 6.1; Win64; x64) Apple\
+    WebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.86 Safari/537.36"
 }
-url = "http://www.kuwo.cn/bang/index"
 
-# 各榜单请求url
-# 酷我热歌榜 http://www.kuwo.cn/bang/content?name=%E9%85%B7%E6%88%91%E7%83%AD%E6%AD%8C%E6%A6%9C&bangId=16
-# 酷我新歌榜 http://www.kuwo.cn/bang/content?name=%E9%85%B7%E6%88%91%E6%96%B0%E6%AD%8C%E6%A6%9C&bangId=17
-# 酷我飙升榜 http://www.kuwo.cn/bang/content?name=%E9%85%B7%E6%88%91%E9%A3%99%E5%8D%87%E6%A6%9C&bangId=93
-resp = requests.get(url, headers=header).text
-# print(resp)
+# 在酷我音乐榜单主页获取榜单名跟ID
+def getBangInfo(name):
+    url = "http://www.kuwo.cn/bang/index"
+    resp = requests.get(url, headers=header).text
 
-# 正则表达式提取name和bangid
-pat1 = r'data-name="(.*?)" data-bangid="'
-pat2 = r'data-bangid="(.*?)">'
-namelist = re.findall(pat1, resp)
-bangIdList = re.findall(pat2, resp)
+    # 正则表达式提取name和bangid
+    pat1 = r'data-name="(.*?)" data-bangid="'
+    pat2 = r'data-bangid="(.*?)">'
+    namelist = re.findall(pat1, resp)
+    bangIdList = re.findall(pat2, resp)
 
-# 根据输入的榜单name获取相应的bangId
-name = input("请输入需要下载的榜单名称：")
-idx = namelist.index(name)
-bangId = bangIdList[idx]
+    # 根据输入的榜单name获取相应的bangId
+    idx = namelist.index(name)
+    bangId = bangIdList[idx]
+    return bangId
 
-# print(len(namelist))
-# print(len(bangIdList))
+# 通过获取榜单页面信息来获取歌曲id
+def getSongId(name, bangId):
+    # 请求对应榜单页面，如酷我热歌榜，获取该页面信息
+    baseurl = "http://www.kuwo.cn/bang/content"
+    par = {"name": name, "bangId": bangId}
+    html = requests.get(url=baseurl, params=par, headers=header).text
 
-# 榜单url
-baseurl = "http://www.kuwo.cn/bang/content"
-par = {"name": name, "bangId": bangId}
-html = requests.get(baseurl, params=par, headers=header).text
-print(html)
+    # 获取该榜单页面的歌曲id
+    pat3 = '"id":"(.*?)","name"'
+    pat4 = '"name":"(.*?)","artist"'
+    songIdList = re.findall(pat3, html)
+    songNameList = re.findall(pat4, html)
+    return songIdList, songNameList
 
-# 榜单歌曲各自对应的url
-# 一曲相思  http://www.kuwo.cn/yinyue/54761734?catalog=yueku2016
-# 绿色    http://www.kuwo.cn/yinyue/63803414?catalog=yueku2016
-# 生僻字   http://www.kuwo.cn/yinyue/37107986?catalog=yueku2016
-# 狂浪  http://www.kuwo.cn/yinyue/58185350?catalog=yueku2016
-# http://www.kuwo.cn/yinyue/歌曲id
+# 通过ant_url获取.aac文件的url,并下载.aac文件
+def getSong(songIdList, songNameList):
+    for i in range(0, len(songIdList)):
+        # key = songKeyList[i][6:]  # 对id MUSIC_48742179切片取48742179
+        key = songIdList[i]
+        ant_url = "http: // antiserver.kuwo.cn / anti.s?format = aac | mp3 & rid = " + key + " & type = convert_url & response = res"
+        songName = songNameList[i]
+        song_number = i + 1
+
+        # 获取.acc文件url
+        data = getAac(ant_url)
+        saveSong(songName, song_number, data)
+
+    print("下载完成！")
 
 
-# 获取歌曲id
-pat3 = '"id":"(.*?)","name"'
-pat4 = '"name":"(.*?)","artist"'
-songKeyList = re.findall(pat3, html)
-songNameList = re.findall(pat4, html)
-print(len(songKeyList))
-print(len(songNameList))
-# for i in range(0, len(songKeyList)):
-#     key = songKeyList[i][6:]  # 对id MUSIC_48742179切片取48742179
-#     songName = songNameList[i]
-#     songUrl = "http://www.kuwo.cn/yinyue/" + key
-#     ct = {"catalog": "yueku2016"}
-#     resp2 = requests.get(songUrl, headers=header, params=ct).content
-#
-#     print("正在下载第",i+1,"首")
-#     with open("F:\\music\\{}.mp3".format(songName), "wb") as f:
-#         f.write(resp2)
-#
-# print("下载完成！")
+# 获取.aac文件url方法，再获取.acc文件
+def getAac(url):
+    resp3 = requests.get(url, headers=header)
+    aac_url = resp3.headers['Location']
+
+    # 获取.acc文件
+    acc_data = requests.get(url=aac_url,headers=header).content
+    return acc_data
+
+# 将歌曲写入文件
+def saveSong(songName,songId, data):
+    print("正在下载第",songId,"首")
+    with open("F:\\music\\{}.mp3".format(songName), "wb") as f:
+        f.write(data)
+
+if __name__ == '__main__':
+    name = input("请输入需要下载的榜单名称：")
+    bang_id = getBangInfo(name)
+    l = getSongId(name, bang_id)
+    getSong(l[0], l[1])
+
