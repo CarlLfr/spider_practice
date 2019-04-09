@@ -44,7 +44,7 @@ def getSong(songIdList, songNameList):
     for i in range(0, len(songIdList)):
         # key = songKeyList[i][6:]  # 对id MUSIC_48742179切片取48742179
         key = songIdList[i]
-        ant_url = "http: // antiserver.kuwo.cn / anti.s?format = aac | mp3 & rid = " + key + " & type = convert_url & response = res"
+        ant_url = "http://antiserver.kuwo.cn/anti.s?format=aac|mp3&rid=" + key + "&type=convert_url&response=res"
         songName = songNameList[i]
         song_number = i + 1
 
@@ -57,7 +57,7 @@ def getSong(songIdList, songNameList):
 
 # 获取.aac文件url方法，再获取.acc文件
 def getAac(url):
-    resp3 = requests.get(url, headers=header)
+    resp3 = requests.get(url, headers=header, allow_redirects=False)
     aac_url = resp3.headers['Location']
 
     # 获取.acc文件
@@ -65,7 +65,7 @@ def getAac(url):
     return acc_data
 
 # 将歌曲写入文件
-def saveSong(songName,songId, data):
+def saveSong(songName, songId, data):
     print("正在下载第",songId,"首")
     with open("F:\\music\\{}.mp3".format(songName), "wb") as f:
         f.write(data)
