@@ -18,7 +18,7 @@ def dealPat(patt, data):
 def combineList(list1, list2, list3):
     li = []
     for i in range(len(list1)):
-        li.append(list1[i]+"，"+list2[i]+"，评分"+list3[i])
+        li.append(str(i+1)+"，"+list1[i]+"，"+list2[i]+"，评分"+list3[i])
     return li
 
 def saveToFile(filename, li):
