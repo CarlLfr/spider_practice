@@ -3,12 +3,6 @@
 
 from urllib import request
 import re
-import json
-
-# name_pat = r'"title":"(.*?)","url"'
-# regions_pat = r'"regions":(.*?),"title"'
-# date_pat = r'"release_date":"(.*?)","actor_count"'
-# score_pat = r'"score":"(.*?)","actors"'
 
 def getHtml(url, header):
     res = request.Request(url, headers=header)
@@ -21,12 +15,21 @@ def dealPat(patt, data):
     return result_list
 
 
-def saveToFile(listt):
-    with open("F:\spider_project\doubanrank.txt", "w") as f:
-        f.write(json.dumps(listt, ensure_ascii=False) + '\n')  # json.dumps 用于将 Python 对象编码成 JSON 字符串，若对象为字符串是无法写入文本的
+def combineList(list1, list2, list3):
+    li = []
+    for i in range(len(list1)):
+        li.append(list1[i]+"，"+list2[i]+"，评分"+list3[i])
+    return li
+
+def saveToFile(filename, li):
+    with open(filename, "w") as f:
+        for s in li:
+            f.write(str(s)+'\n')
         f.close()
+        print("保存成功！")
 
 if __name__ == '__main__':
+    filename = "F:\spider_project\doubanrank.txt"
     header = {
         "User-Agent": "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.86 Safari/537.36"
     }
@@ -39,12 +42,9 @@ if __name__ == '__main__':
     date_pat = r'"release_date":"(.*?)","actor_count"'
     score_pat = r'"score":"(.*?)","actors"'
     list1 = dealPat(name_pat, data)
-    list2 = dealPat(regions_pat, data)
+    # list2 = dealPat(regions_pat, data)
     list3 = dealPat(date_pat, data)
     list4 = dealPat(score_pat, data)
-    print(list1)
-    print(list2)
-    print(list3)
-    print(list4)
-
-
+    lii = combineList(list1, list3, list4)
+    print(lii)
+    saveToFile(filename, lii)
