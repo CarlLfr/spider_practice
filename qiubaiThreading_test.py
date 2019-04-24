@@ -13,8 +13,8 @@ from bs4 import BeautifulSoup
 # 采集网页线程--爬取段子列表所在网页，放进列表
 class Thread1(threading.Thread):
     def __init__(self, threadName, pageQueue, dataQueue):
-        # super(Thread1, self).__init__()
-        threading.Thread.__init__(self)
+        super(Thread1, self).__init__()
+        # threading.Thread.__init__(self)
         self.threadName = threadName    #线程名
         self.pageQueue = pageQueue  #页码队列
         self.dataQueue = dataQueue    #数据队列
@@ -36,8 +36,8 @@ class Thread1(threading.Thread):
 
 class Thread2(threading.Thread):
     def __init__(self, threadName, fileName, dataQueue):
-        # super(Thread2, self).__init__()
-        threading.Thread.__init__(self)
+        super(Thread2, self).__init__()
+        # threading.Thread.__init__(self)
         self.threadName = threadName
         self.fileName = fileName
         self.dataQueue = dataQueue
@@ -63,7 +63,7 @@ flag2 = False   #判断数据队列中是否为空
 def main():
     # 页码队列
     pageQueue = queue.Queue(10)
-    for i in range(11):
+    for i in range(1, 11):
         pageQueue.put(i)
     #存放采集结果的数据队列
     dataQueue = queue.Queue()
@@ -98,5 +98,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-
-
