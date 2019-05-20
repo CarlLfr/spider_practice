@@ -92,14 +92,10 @@ class Wechat_Moment(object):
 
             # 遍历获取每个list数据
             for item in items:
-                try:
-                    content_text = item.find_element_by_id('com.tencent.mm:id/o7').text
-                    day_text = item.find_element_by_id('com.tencent.mm:id/eo2').text
-                    mouth_text = item.find_element_by_id('com.tencent.mm:id/eo3').text
-                    print("%s%s发表朋友圈：%s" % (mouth_text, day_text, content_text))
-                except:
-                    content_text = None
-                    continue
+                content_text = item.find_element_by_id('com.tencent.mm:id/o7').text
+                day_text = item.find_element_by_id('com.tencent.mm:id/eo2').text
+                mouth_text = item.find_element_by_id('com.tencent.mm:id/eo3').text
+                print("%s%s发表朋友圈：%s" % (mouth_text, day_text, content_text))
 
 if __name__ == '__main__':
     wechat_moment = Wechat_Moment()
